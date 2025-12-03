@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourcePerFileMappings">
+    <file url="file://$PROJECT_DIR$/database/table_create.sql" value="2a0d2fce-41b0-4559-b35c-e2791f198b53" />
+    <file url="file://$PROJECT_DIR$/hiphop-ghetto-service/hiphop-ghetto-service-collection/src/main/java/com/xxxyjade/hiphopghetto/mapper/CollectionMapper.java" value="2a0d2fce-41b0-4559-b35c-e2791f198b53" />
+  </component>
+</project>
