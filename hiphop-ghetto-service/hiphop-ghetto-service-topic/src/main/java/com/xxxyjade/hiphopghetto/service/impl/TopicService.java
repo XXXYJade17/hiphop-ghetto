@@ -3,16 +3,13 @@ package com.xxxyjade.hiphopghetto.service.impl;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xxxyjade.hiphopghetto.cache.annotation.ThreeLevelCacheEvict;
+import com.xxxyjade.hiphopghetto.enums.MusicSortType;
 import com.xxxyjade.hiphopghetto.enums.OperationType;
 import com.xxxyjade.hiphopghetto.enums.ResourceType;
-import com.xxxyjade.hiphopghetto.enums.SortType;
 import com.xxxyjade.hiphopghetto.enums.StatsType;
 import com.xxxyjade.hiphopghetto.event.StatsOperationEvent;
 import com.xxxyjade.hiphopghetto.mapper.TopicMapper;
-import com.xxxyjade.hiphopghetto.pojo.dto.PageQueryDTO;
-import com.xxxyjade.hiphopghetto.pojo.dto.TopicCreateDTO;
-import com.xxxyjade.hiphopghetto.pojo.dto.TopicInfoDTO;
-import com.xxxyjade.hiphopghetto.pojo.dto.TopicUpdateDTO;
+import com.xxxyjade.hiphopghetto.pojo.dto.*;
 import com.xxxyjade.hiphopghetto.pojo.entity.Topic;
 import com.xxxyjade.hiphopghetto.pojo.vo.PageVO;
 import com.xxxyjade.hiphopghetto.pojo.vo.TopicInfoVO;
@@ -25,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,17 +44,15 @@ public class TopicService implements ITopicService {
             value = "topicPage::",
             key = "'page=' + #pageQueryDTO.page + '&size=' + #pageQueryDTO.size + '&sortType=' + #pageQueryDTO.sortType"
     )
-    public PageVO<TopicVO> page(PageQueryDTO pageQueryDTO) {
-        SortType sortType = pageQueryDTO.getSortType();
+    public PageVO<TopicVO> page(TopicPageQueryDTO pageQueryDTO) {
         // 创建分页对象
         Page<Topic> page = new Page<>(
                 pageQueryDTO.getPage(),
                 pageQueryDTO.getSize()
         );
-        // 设置排序，默认为倒序
-        if (sortType != SortType.DEFAULT) {
-            page.setOrders(Collections.singletonList(OrderItem.desc(sortType.getType())));
-        }
+        page.setOrders(Collections.singletonList(OrderItem.desc(pageQueryDTO.getSortType().getType())));
+
+        // 查询
         topicMapper.selectPage(page, null);
         List<TopicVO> topicVOList = new ArrayList<>();
         for (Topic topic : page.getRecords()) {
@@ -69,6 +63,7 @@ public class TopicService implements ITopicService {
                     .build();
             topicVOList.add(topicVO);
         }
+
         return new PageVO<>(page.getTotal(), topicVOList);
     }
 
@@ -81,7 +76,7 @@ public class TopicService implements ITopicService {
 
 
         StatsOperationEvent event = StatsOperationEvent.builder()
-                .id(topic.getId())
+                .resourceId(topic.getId())
                 .resourceType(ResourceType.TOPIC)
                 .statsType(StatsType.VIEW_COUNT)
                 .operationType(OperationType.COUNT_INCREASE)

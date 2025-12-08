@@ -1,13 +1,16 @@
 package com.xxxyjade.hiphopghetto.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * 歌曲实体类
@@ -16,71 +19,30 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("song")
+@Document(collection = "song")
 public class Song implements Serializable {
 
-    /**
-     * 歌曲id（网易云歌曲 id）
-     */
-    private Long id;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
-    /**
-     * 歌名
-     */
-    private String songName;
+    @Id
+    private String id;
 
-    /**
-     * 所属专辑id
-     */
-    private Long albumId;
+    private String name;
 
+    private String albumId;
 
-    /**
-     * 所属专辑名
-     */
     private String albumName;
 
-    /**
-     * 歌手名
-     */
-    private String artists;
+    private List<Artist> artists;
 
-    /**
-     * 发行时间
-     */
-    private LocalDate releaseTime;
+    private Long publishTime;
 
-    /**
-     * 时长（秒）
-     */
     private Integer duration;
 
-    /**
-     * 封面 URL
-     */
     private String coverUrl;
 
-    /**
-     * 平均评分(百分制)
-     */
-    private Integer avgScore;
-
-    /**
-     * 累计评分
-     */
     @Builder.Default
-    private Integer ratingCount = 0;
-
-    /**
-     * 累计收藏
-     */
-    @Builder.Default
-    private Integer collectionCount = 0;
-
-    /**
-     * 累计评论
-     */
-    @Builder.Default
-    private Integer commentCount = 0;
+    private MusicStats stats = new MusicStats();
 
 }

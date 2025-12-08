@@ -26,9 +26,6 @@ public class RatingService implements IRatingService {
 
     private final RatingMapper ratingMapper;
     private final EventPublisher eventPublisher;
-//    private final RatingMessageService ratingMessageService;
-//    private final AlbumMapper albumMapper;
-//    private final SongMapper songMapper;
 
     /**
      * 查询用户评分
@@ -39,11 +36,14 @@ public class RatingService implements IRatingService {
             unless = "#result == null"
     )
     public Integer selectScore(SelectScoreDTO selectScoreDTO) {
+        // 查询评分
         QueryWrapper<Rating> wrapper = new QueryWrapper<Rating>()
                 .eq("user_id", selectScoreDTO.getUserId())
                 .eq("resource_id", selectScoreDTO.getResourceId())
                 .eq("resource_type", selectScoreDTO.getResourceType());
         Rating rating = ratingMapper.selectOne(wrapper);
+
+        // 返回评分
         return rating.getScore();
     }
 
@@ -56,6 +56,7 @@ public class RatingService implements IRatingService {
     )
     @Transactional(rollbackFor = Exception.class)
     public void rate(RatingDTO ratingDTO) {
+        // 构建评分实体
         Rating rating = Rating.builder()
                 .userId(ratingDTO.getUserId())
                 .resourceId(ratingDTO.getResourceId())
@@ -63,22 +64,25 @@ public class RatingService implements IRatingService {
                 .score(ratingDTO.getScore())
                 .build();
 
+        // 查询评分
         Wrapper<Rating> queryWrapper = new LambdaQueryWrapper<Rating>()
                 .eq(Rating::getUserId, ratingDTO.getUserId())
                 .eq(Rating::getResourceId, ratingDTO.getResourceId())
                 .eq(Rating::getResourceType, ratingDTO.getResourceType());
-
         Rating res = ratingMapper.selectOne(queryWrapper);
 
+        // 评分不存在或相同，则不处理
         if (res != null && res.getScore().equals(ratingDTO.getScore())) {
             return;
         }
 
-        ratingMapper.upsert(rating);
+        // 插入或更新评分
+        int upsert = ratingMapper.upsert(rating);
 
-        if (res == null) {
+        // 评分不存在，则表示评分第一次创建，发送统计事件
+        if (res == null && upsert > 0) {
             StatsOperationEvent event = StatsOperationEvent.builder()
-                    .id(rating.getId())
+                    .resourceId(rating.getResourceId())
                     .resourceType(rating.getResourceType())
                     .statsType(StatsType.RATING_COUNT)
                     .operationType(OperationType.COUNT_INCREASE)

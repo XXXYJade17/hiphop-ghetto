@@ -1,4 +1,4 @@
-1drop database  hiphop_ghetto;
+drop database  hiphop_ghetto;
 create database hiphop_ghetto;
 use hiphop_ghetto;
 -- 用户表
@@ -83,38 +83,6 @@ create table user_rating (
     index idx_resource (resource_id, resource_type),
     constraint fk_user_rating foreign key (user_id) references user(id)
 ) engine = InnoDB default charset = utf8mb4;
-# 专辑表
-create table album (
-    id bigint comment '专辑id(网易云id)',
-    album_name varchar(20) not null comment '# 专辑名',
-    artists varchar(50) not null comment '歌手名',
-    release_time date not null comment '发行日期',
-    cover_url varchar(255) not null comment '专辑封面',
-    description text not null comment '简介',
-    avg_score tinyint default null comment '平均评分(百分制)',
-    rating_count int default 0 comment '评分数量',
-    collection_count int default 0 comment '收藏数量',
-    comment_count int default 0 comment '评论数量',
-    primary key (id)
-) engine = InnoDB default charset = utf8mb4;
-# 歌曲表
-create table song (
-                      id bigint comment '歌曲id(网易云id)',
-                      song_name varchar(20) not null comment '歌曲名',
-                      album_id bigint not null comment '所属专辑 Id',
-                      album_name varchar(20) not null comment '所属专辑名',
-                      artists varchar(100) not null comment '歌手名',
-                      release_time date not null comment '发行日期',
-                      duration int not null comment '时长(秒)',
-                      cover_url varchar(255) not null comment '封面url',
-                      avg_score tinyint default null comment '平均评分(百分制)',
-                      rating_count int default 0 comment '评分数量',
-                      collection_count int default 0 comment '收藏数量',
-                      comment_count int default 0 comment '评论数量',
-                      primary key (id),
-                      index idx_song_album_id (album_id),
-                      constraint fk_album_song foreign key (album_id) references album(id)
-) engine = InnoDB default charset = utf8mb4;
 # 话题表
 create table topic (
     id bigint comment '话题id(雪花算法生成)',
@@ -134,3 +102,35 @@ create table topic (
 ) engine = InnoDB default charset = utf8mb4;
 
 
+# 专辑表
+create table album (
+                       id bigint comment '专辑id(网易云id)',
+                       album_name varchar(20) not null comment '# 专辑名',
+                       artists varchar(50) not null comment '歌手名',
+                       release_date date not null comment '发行日期',
+                       cover_url varchar(255) not null comment '专辑封面',
+                       description text not null comment '简介',
+                       avg_score tinyint default null comment '平均评分(百分制)',
+                       rating_count int default 0 comment '评分数量',
+                       collection_count int default 0 comment '收藏数量',
+                       comment_count int default 0 comment '评论数量',
+                       primary key (id)
+) engine = InnoDB default charset = utf8mb4;
+# 歌曲表
+create table song (
+                      id bigint comment '歌曲id(网易云id)',
+                      song_name varchar(20) not null comment '歌曲名',
+                      album_id bigint not null comment '所属专辑 Id',
+                      album_name varchar(20) not null comment '所属专辑名',
+                      artists varchar(100) not null comment '歌手名',
+                      release_time date not null comment '发行日期',
+                      duration int not null comment '时长(秒)',
+                      cover_url varchar(255) not null comment '封面url',
+                      avg_score tinyint default null comment '平均评分(百分制)',
+                      rating_count int default 0 comment '评分数量',
+                      collection_count int default 0 comment '收藏数量',
+                      comment_count int default 0 comment '评论数量',
+                      primary key (id),
+                      index idx_song_album_id (album_id),
+                      constraint fk_album_song foreign key (album_id) references album(id)
+) engine = InnoDB default charset = utf8mb4;

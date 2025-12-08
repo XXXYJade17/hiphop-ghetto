@@ -15,7 +15,7 @@ public class MessageSender implements IMessageSender {
     private final RabbitTemplate rabbitTemplate;
 
     public <T> void send(Message<T> message) {
-        log.info("发送消息：{}", message);
+        log.info("发送消息: {}", message);
         rabbitTemplate.convertAndSend(
                 message.getQueue(),
                 message

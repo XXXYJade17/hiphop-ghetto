@@ -4,13 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xxxyjade.hiphopghetto.cache.annotation.ThreeLevelCacheEvict;
+import com.xxxyjade.hiphopghetto.enums.MusicSortType;
 import com.xxxyjade.hiphopghetto.enums.OperationType;
-import com.xxxyjade.hiphopghetto.enums.SortType;
 import com.xxxyjade.hiphopghetto.enums.StatsType;
 import com.xxxyjade.hiphopghetto.event.StatsOperationEvent;
 import com.xxxyjade.hiphopghetto.mapper.CommentMapper;
 import com.xxxyjade.hiphopghetto.pojo.dto.CommentDTO;
-import com.xxxyjade.hiphopghetto.pojo.dto.PageQueryDTO;
+import com.xxxyjade.hiphopghetto.pojo.dto.CommentPageQueryDTO;
+import com.xxxyjade.hiphopghetto.pojo.dto.MusicPageQueryDTO;
 import com.xxxyjade.hiphopghetto.pojo.entity.Comment;
 import com.xxxyjade.hiphopghetto.pojo.vo.CommentVO;
 import com.xxxyjade.hiphopghetto.pojo.vo.PageVO;
@@ -41,19 +42,17 @@ public class CommentService implements ICommentService {
      */
     @Cacheable(
             value = "commentPage::",
-            key = "'parentId='+ #pageQueryDTO.parentId +'&page=' + #pageQueryDTO.page + '&size=' + #pageQueryDTO.size + '&sortType=' + #pageQueryDTO.sortType"
+            key = "'parentId='+ #musicPageQueryDTO.parentId +'&page=' + #musicPageQueryDTO.page + '&size=' + #musicPageQueryDTO.size + '&sortType=' + #musicPageQueryDTO.sortType"
     )
-    public PageVO<CommentVO> page(PageQueryDTO pageQueryDTO) {
-        SortType sortType = pageQueryDTO.getSortType();
-        // 创建分页对象
+    public PageVO<CommentVO> page(CommentPageQueryDTO pageQueryDTO) {
+        // 构建分页对象
         Page<Comment> page = new Page<>(
                 pageQueryDTO.getPage(),
                 pageQueryDTO.getSize()
+
         );
-        // 设置排序，默认为倒序
-        if (sortType != SortType.DEFAULT) {
-            page.setOrders(Collections.singletonList(OrderItem.desc(sortType.getType())));
-        }
+        page.setOrders(Collections.singletonList(OrderItem.desc(pageQueryDTO.getSortType().getType())));
+
         // 查询
         QueryWrapper<Comment> wrapper = new QueryWrapper<Comment>()
                 .eq("parent_id", pageQueryDTO.getParentId());
@@ -62,6 +61,7 @@ public class CommentService implements ICommentService {
                 pageQueryDTO.getUserId(),
                 page.getRecords().stream().map(Comment::getId).toList()
         );
+
         // 构造VO
         List<CommentVO> commentVOList = new ArrayList<>();
         for (Comment comment : page.getRecords()) {
@@ -78,6 +78,7 @@ public class CommentService implements ICommentService {
                     .build();
             commentVOList.add(commentVO);
         }
+
         return new PageVO<>(page.getTotal(), commentVOList);
     }
 
@@ -94,9 +95,10 @@ public class CommentService implements ICommentService {
                 .content(commentDTO.getContent())
                 .build();
         commentMapper.insert(comment);
+
         // 发送事件
         StatsOperationEvent event = StatsOperationEvent.builder()
-                .id(comment.getParentId())
+                .resourceId(comment.getParentId())
                 .resourceType(commentDTO.getParentType())
                 .statsType(StatsType.COMMENT_COUNT)
                 .operationType(OperationType.COUNT_INCREASE)
@@ -109,15 +111,17 @@ public class CommentService implements ICommentService {
      */
     @ThreeLevelCacheEvict(keyPrefix = "'commentPage::parentId=' + #commentDTO.parentId")
     public void delete(CommentDTO commentDTO) {
+        // 构造实体，并删除
         Comment comment = Comment.builder()
                 .id(commentDTO.getId())
                 .userId(commentDTO.getUserId())
                 .parentId(commentDTO.getParentId())
                 .build();
         commentMapper.deleteById(comment);
+
         // 发送事件
         StatsOperationEvent event = StatsOperationEvent.builder()
-                .id(comment.getParentId())
+                .resourceId(comment.getParentId())
                 .resourceType(commentDTO.getParentType())
                 .statsType(StatsType.COMMENT_COUNT)
                 .operationType(OperationType.COUNT_DECREASE)

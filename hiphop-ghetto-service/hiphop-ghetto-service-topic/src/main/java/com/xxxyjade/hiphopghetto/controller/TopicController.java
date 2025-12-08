@@ -1,6 +1,6 @@
 package com.xxxyjade.hiphopghetto.controller;
 
-import com.xxxyjade.hiphopghetto.enums.SortType;
+import com.xxxyjade.hiphopghetto.enums.TopicSortType;
 import com.xxxyjade.hiphopghetto.pojo.dto.*;
 import com.xxxyjade.hiphopghetto.pojo.vo.PageVO;
 import com.xxxyjade.hiphopghetto.pojo.vo.TopicInfoVO;
@@ -23,15 +23,13 @@ import org.springframework.web.bind.annotation.*;
 public class TopicController {
 
     private final ITopicService topicService;
-//    private final LikeService likeService;
-//
     @GetMapping
     @Operation(summary = "分页查询话题")
     public Result<PageVO<TopicVO>> page(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "20") Integer size,
-            @RequestParam(value = "sortType",defaultValue = "DEFAULT") SortType sortType) {
-        PageQueryDTO pageQueryDTO = PageQueryDTO.builder()
+            @RequestParam(value = "sortType",defaultValue = "DEFAULT") TopicSortType sortType) {
+        TopicPageQueryDTO pageQueryDTO = TopicPageQueryDTO.builder()
                 .userId(ThreadUtil.getUserId())
                 .page(page)
                 .size(size)

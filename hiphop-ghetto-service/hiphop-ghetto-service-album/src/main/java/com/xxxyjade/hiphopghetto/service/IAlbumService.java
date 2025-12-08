@@ -1,50 +1,51 @@
 package com.xxxyjade.hiphopghetto.service;
 
 import com.xxxyjade.hiphopghetto.pojo.entity.Album;
-import com.xxxyjade.hiphopghetto.pojo.dto.PageQueryDTO;
+import com.xxxyjade.hiphopghetto.pojo.dto.MusicPageQueryDTO;
 import com.xxxyjade.hiphopghetto.pojo.vo.PageVO;
-import com.xxxyjade.hiphopghetto.pojo.vo.AlbumDetailVO;
+
+import java.util.List;
 
 public interface IAlbumService {
 
     /**
      * （条件）分页查询
      */
-    PageVO<Album> page(PageQueryDTO pageQueryDTO);
+    PageVO<Album> page(MusicPageQueryDTO pageQueryDTO);
 
     /**
      * 查询专辑详情
      */
-    AlbumDetailVO detail(Long id);
+    Album detail(String id);
 
     /**
      * 插入专辑，若存在则忽略
      */
-    void insertIgnore(Album album);
+    void saveAll(List<Album> albums);
 
     /**
      * 收藏数递增
      */
-    void increaseCollectionCount(Long id);
+    void increaseCollectionCount(String id);
 
     /**
      * 收藏数递减
      */
-    void decreaseCollectionCount(Long id);
+    void decreaseCollectionCount(String id);
 
     /**
      * 评分数递增
      */
-    void increaseRatingCount(Long id);
+    void increaseRatingCount(String id);
 
     /**
      * 评论数递增
      */
-    void increaseCommentCount(Long id);
+    void increaseCommentCount(String id);
 
     /**
      * 评论数递减
      */
-    void decreaseCommentCount(Long id);
+    void decreaseCommentCount(String id);
 
 }

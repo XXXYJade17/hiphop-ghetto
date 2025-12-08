@@ -1,9 +1,6 @@
 package com.xxxyjade.hiphopghetto.service;
 
-import com.xxxyjade.hiphopghetto.pojo.dto.PageQueryDTO;
-import com.xxxyjade.hiphopghetto.pojo.dto.TopicCreateDTO;
-import com.xxxyjade.hiphopghetto.pojo.dto.TopicInfoDTO;
-import com.xxxyjade.hiphopghetto.pojo.dto.TopicUpdateDTO;
+import com.xxxyjade.hiphopghetto.pojo.dto.*;
 import com.xxxyjade.hiphopghetto.pojo.vo.PageVO;
 import com.xxxyjade.hiphopghetto.pojo.vo.TopicInfoVO;
 import com.xxxyjade.hiphopghetto.pojo.vo.TopicVO;
@@ -13,7 +10,7 @@ public interface ITopicService {
     /**
      * 分页查询话题
      */
-    PageVO<TopicVO> page(PageQueryDTO pageQueryDTO);
+    PageVO<TopicVO> page(TopicPageQueryDTO pageQueryDTO);
 
     /**
      * 查询话题详情

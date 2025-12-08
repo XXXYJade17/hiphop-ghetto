@@ -11,6 +11,10 @@ spring:
       host: 192.168.153.101
       port: 6379
       password: 123456
+    mongodb:
+      host: 192.168.153.103
+      port: 27017
+      database: hiphop_ghetto
   rabbitmq:
     host: 192.168.153.102 # ?????IP
     port: 5672 # ??
@@ -41,3 +45,8 @@ springdoc:
     - group: 'default'
       paths-to-match: '/api/**'
       packages-to-scan: com.xxxyjade.hiphopghetto.controller
+
+logging:
+  level:
+    org.springframework.data.mongodb: DEBUG
+    org.mongodb.driver: DEBUG

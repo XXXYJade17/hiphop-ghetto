@@ -1,12 +1,11 @@
 package com.xxxyjade.hiphopghetto.controller;
 
 import com.xxxyjade.hiphopghetto.pojo.entity.Album;
-import com.xxxyjade.hiphopghetto.enums.SortType;
-import com.xxxyjade.hiphopghetto.pojo.dto.PageQueryDTO;
+import com.xxxyjade.hiphopghetto.enums.MusicSortType;
+import com.xxxyjade.hiphopghetto.pojo.dto.MusicPageQueryDTO;
 import com.xxxyjade.hiphopghetto.pojo.vo.PageVO;
 import com.xxxyjade.hiphopghetto.result.Result;
 import com.xxxyjade.hiphopghetto.service.IAlbumService;
-import com.xxxyjade.hiphopghetto.pojo.vo.AlbumDetailVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -25,23 +24,21 @@ public class AlbumController {
     @GetMapping
     @Operation(summary = "（条件）分页查询专辑")
     public Result<PageVO<Album>> page(
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "20") Integer size,
-            @RequestParam(required = false) SortType sortType) {
-        PageQueryDTO pageQueryDTO = PageQueryDTO.builder()
+            @RequestParam(value = "page", defaultValue = "1") Integer page,
+            @RequestParam(value = "size", defaultValue = "20") Integer size,
+            @RequestParam(defaultValue = "DEFAULT") MusicSortType sortType) {
+        MusicPageQueryDTO pageQueryDTO = MusicPageQueryDTO.builder()
                 .page(page)
                 .size(size)
                 .sortType(sortType)
                 .build();
-        log.info("分页查询专辑:{}",pageQueryDTO);
         return Result.success(albumService.page(pageQueryDTO));
     }
 
     @Operation(summary = "查询专辑详情")
     @GetMapping("/{id}")
-    public Result<AlbumDetailVO> detail(@PathVariable("id") Long id) {
-        log.info("查询专辑详情:{}",id);
-        return Result.success(albumService.detail(id));
+    public Result<Album> detail(@PathVariable("id") Long id) {
+        return Result.success(albumService.detail(id.toString()));
     }
 
 }

@@ -12,13 +12,13 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfig {
 
     /**
-     * 创建统计操作队列
+     * 创建爬虫队列
      */
     @Bean
-    public Queue statsQueue() {
-        return QueueBuilder.durable(MessageQueueConstant.STATS_QUEUE)
+    public Queue crawlQueue() {
+        return QueueBuilder.durable(MessageQueueConstant.CRAWl_QUEUE)
                 .withArgument("x-dead-letter-exchange", "")
-                .withArgument("x-dead-letter-routing-key", MessageQueueConstant.STATS_DEAD_QUEUE)
+                .withArgument("x-dead-letter-routing-key", MessageQueueConstant.CRAWl_DEAD_QUEUE)
                 .build();
     }
 
@@ -31,11 +31,11 @@ public class RabbitConfig {
     }
 
     /**
-     * 创建统计操作死信队列
+     * 创建爬虫死信队列
      */
     @Bean
-    public Queue statsDeadQueue() {
-        return new Queue(MessageQueueConstant.STATS_DEAD_QUEUE);
+    public Queue crawlDeadQueue() {
+        return new Queue(MessageQueueConstant.CRAWl_DEAD_QUEUE);
     }
 
     /**

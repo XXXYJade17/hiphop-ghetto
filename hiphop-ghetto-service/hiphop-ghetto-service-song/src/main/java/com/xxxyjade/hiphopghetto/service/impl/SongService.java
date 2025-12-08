@@ -1,34 +1,29 @@
 package com.xxxyjade.hiphopghetto.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.OrderItem;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xxxyjade.hiphopghetto.cache.annotation.ThreeLevelCache;
 import com.xxxyjade.hiphopghetto.cache.annotation.ThreeLevelCacheEvict;
 import com.xxxyjade.hiphopghetto.pojo.entity.Song;
-import com.xxxyjade.hiphopghetto.enums.SortType;
-import com.xxxyjade.hiphopghetto.mapper.SongMapper;
-import com.xxxyjade.hiphopghetto.pojo.dto.PageQueryDTO;
+import com.xxxyjade.hiphopghetto.pojo.dto.MusicPageQueryDTO;
 import com.xxxyjade.hiphopghetto.pojo.vo.PageVO;
+import com.xxxyjade.hiphopghetto.repository.SongRepository;
 import com.xxxyjade.hiphopghetto.service.ISongService;
-import com.xxxyjade.hiphopghetto.util.RedisUtil;
-import com.xxxyjade.hiphopghetto.pojo.vo.SongDetailVO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
 @AllArgsConstructor
 public class SongService implements ISongService {
 
-    private final RedisUtil redisUtil;
-    private final SongMapper songMapper;
+    private final SongRepository songRepository;
 
     /**
      * （条件）分页查询歌曲
@@ -37,14 +32,15 @@ public class SongService implements ISongService {
             key = "'songPage::page=' + #pageQueryDTO.page + '&size=' + #pageQueryDTO.size + '&sortType=' + #pageQueryDTO.sortType"
     )
     @Transactional(rollbackFor = Exception.class)
-    public PageVO<Song> page(PageQueryDTO pageQueryDTO) {
-        SortType sortType = pageQueryDTO.getSortType();
-        Page<Song> page = new Page<>(pageQueryDTO.getPage(), pageQueryDTO.getSize());
-        if (sortType != SortType.DEFAULT) {
-            page.setOrders(Collections.singletonList(OrderItem.desc(sortType.getType())));
-        }
-        songMapper.selectPage(page, null);
-        return new PageVO<>(page.getTotal(), page.getRecords());
+    public PageVO<Song> page(MusicPageQueryDTO musicPageQueryDTO) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "stats." + musicPageQueryDTO.getSortType().getType());
+        PageRequest pageRequest = PageRequest.of(
+                musicPageQueryDTO.getPage(),
+                musicPageQueryDTO.getSize(),
+                sort);
+        Page<Song> songPage = songRepository.page(pageRequest);
+        return new PageVO<>(songPage.getTotalElements(), songPage.getContent());
+
     }
 
     /**
@@ -54,71 +50,57 @@ public class SongService implements ISongService {
             key = "'songDetail::id=' + #id"
     )
     @Transactional(rollbackFor = Exception.class)
-    public SongDetailVO detail(Long id) {
-        Song song = songMapper.selectById(id);
-
-        SongDetailVO songDetailVO = new SongDetailVO();
-        BeanUtils.copyProperties(song, songDetailVO);
-        return songDetailVO;
-    }
-
-    /**
-     * 查询专辑中全部歌曲
-     */
-    @ThreeLevelCache(key ="'albumSongs::id' + #albumId")
-    public List<Song> selectByAlbumId(Long albumId) {
-        return songMapper.selectList(
-                new QueryWrapper<Song>()
-                        .eq("album_id", albumId)
-        );
+    public Song detail(String id) {
+        Optional<Song> song = songRepository.findById(id);
+        return song.orElse(null);
     }
 
     /**
      * 插入歌曲，若存在则忽略
      */
     @ThreeLevelCacheEvict(keyPrefix = "albumSongs::")
-    public void insertIgnore(Song song) {
-        songMapper.insertIgnore(song);
+    public void saveAll(List<Song> songs) {
+        songRepository.saveAll(songs);
     }
 
     /**
      * 收藏数递增
      */
     @ThreeLevelCacheEvict(key = "'songDetail::id=' + #id")
-    public void increaseCollectionCount(Long id) {
-        songMapper.increaseCollectionCount(id);
+    public void increaseCollectionCount(String id) {
+        songRepository.increaseCollectionCount(id);
     }
 
     /**
      * 收藏数递减
      */
     @ThreeLevelCacheEvict(key = "'songDetail::id=' + #id")
-    public void decreaseCollectionCount(Long id) {
-        songMapper.decreaseCollectionCount(id);
+    public void decreaseCollectionCount(String id) {
+        songRepository.decreaseCollectionCount(id);
     }
 
     /**
      * 评分数递增
      */
     @ThreeLevelCacheEvict(key = "'songDetail::id=' + #id")
-    public void increaseRatingCount(Long id) {
-        songMapper.increaseRatingCount(id);
+    public void increaseRatingCount(String id) {
+        songRepository.increaseRatingCount(id);
     }
 
     /**
      * 评论数递增
      */
     @ThreeLevelCacheEvict(key = "'songDetail::id=' + #id")
-    public void increaseCommentCount(Long id) {
-        songMapper.increaseCommentCount(id);
+    public void increaseCommentCount(String id) {
+        songRepository.increaseCommentCount(id);
     }
 
     /**
      * 评论数递减
      */
     @ThreeLevelCacheEvict(key = "'songDetail::id=' + #id")
-    public void decreaseCommentCount(Long id) {
-        songMapper.decreaseCommentCount(id);
+    public void decreaseCommentCount(String id) {
+        songRepository.decreaseCommentCount(id);
     }
 
 }

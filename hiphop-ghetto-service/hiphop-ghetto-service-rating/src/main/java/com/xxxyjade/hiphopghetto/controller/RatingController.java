@@ -1,8 +1,6 @@
 package com.xxxyjade.hiphopghetto.controller;
 
 import com.xxxyjade.hiphopghetto.enums.ResourceType;
-import com.xxxyjade.hiphopghetto.pojo.dto.CollectionDTO;
-import com.xxxyjade.hiphopghetto.pojo.dto.IsCollectedDTO;
 import com.xxxyjade.hiphopghetto.pojo.dto.RatingDTO;
 import com.xxxyjade.hiphopghetto.pojo.dto.SelectScoreDTO;
 import com.xxxyjade.hiphopghetto.result.Result;

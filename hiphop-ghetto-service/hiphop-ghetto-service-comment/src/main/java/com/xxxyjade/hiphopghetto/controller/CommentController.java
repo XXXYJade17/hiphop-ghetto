@@ -1,14 +1,14 @@
 package com.xxxyjade.hiphopghetto.controller;
 
+import com.xxxyjade.hiphopghetto.enums.CommentSortType;
 import com.xxxyjade.hiphopghetto.enums.ResourceType;
-import com.xxxyjade.hiphopghetto.enums.SortType;
 import com.xxxyjade.hiphopghetto.pojo.dto.CommentDTO;
 import com.xxxyjade.hiphopghetto.pojo.dto.CommentCreateDTO;
-import com.xxxyjade.hiphopghetto.pojo.dto.PageQueryDTO;
+import com.xxxyjade.hiphopghetto.pojo.dto.CommentPageQueryDTO;
 import com.xxxyjade.hiphopghetto.pojo.vo.CommentVO;
 import com.xxxyjade.hiphopghetto.pojo.vo.PageVO;
 import com.xxxyjade.hiphopghetto.result.Result;
-import com.xxxyjade.hiphopghetto.service.impl.CommentService;
+import com.xxxyjade.hiphopghetto.service.ICommentService;
 import com.xxxyjade.hiphopghetto.util.ThreadUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class CommentController {
 
-    private final CommentService commentService;
+    private final ICommentService commentService;
 
     @GetMapping("/{parentId}")
     @Operation(summary = "分页查询评论")
@@ -32,8 +32,8 @@ public class CommentController {
             @PathVariable("parentId") Long parentId,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "20") Integer size,
-            @RequestParam(value = "sortType", defaultValue = "DEFAULT") SortType sortType) {
-        PageQueryDTO pageQueryDTO = PageQueryDTO.builder()
+            @RequestParam(value = "sortType", defaultValue = "DEFAULT") CommentSortType sortType) {
+        CommentPageQueryDTO pageQueryDTO = CommentPageQueryDTO.builder()
                 .userId(ThreadUtil.getUserId())
                 .parentId(parentId)
                 .page(page)

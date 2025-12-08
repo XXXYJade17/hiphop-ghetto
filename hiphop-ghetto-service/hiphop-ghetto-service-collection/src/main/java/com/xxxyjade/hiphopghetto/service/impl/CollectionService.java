@@ -1,12 +1,9 @@
 package com.xxxyjade.hiphopghetto.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xxxyjade.hiphopghetto.enums.OperationType;
 import com.xxxyjade.hiphopghetto.enums.StatsType;
 import com.xxxyjade.hiphopghetto.event.StatsOperationEvent;
-import com.xxxyjade.hiphopghetto.exception.HipHopGhettoFrameworkException;
 import com.xxxyjade.hiphopghetto.mapper.CollectionMapper;
 import com.xxxyjade.hiphopghetto.pojo.dto.CollectionDTO;
 import com.xxxyjade.hiphopghetto.pojo.dto.IsCollectedDTO;
@@ -38,12 +35,14 @@ public class CollectionService implements ICollectionService {
             unless = "#result == null"
     )
     public Boolean select(IsCollectedDTO isCollectedDTO) {
+        // 查询收藏状态
         Collection collection = Collection.builder()
                 .userId(ThreadUtil.getUserId())
                 .resourceId(isCollectedDTO.getResourceId())
                 .resourceType(isCollectedDTO.getResourceType())
                 .build();
         collection = collectionMapper.selectOne(new QueryWrapper<>(collection));
+
         return collection != null && collection.getIsCollected();
     }
 
@@ -56,6 +55,7 @@ public class CollectionService implements ICollectionService {
     )
     @Transactional(rollbackFor = Exception.class)
     public void collect(CollectionDTO collectionDTO) {
+        // 构建收藏实体
         Collection collection = Collection.builder()
                 .userId(collectionDTO.getUserId())
                 .resourceId(collectionDTO.getResourceId())
@@ -63,15 +63,16 @@ public class CollectionService implements ICollectionService {
                 .isCollected(true)
                 .build();
 
+        // 插入或更新收藏
         collectionMapper.upsert(collection);
 
+        // 发布事件
         StatsOperationEvent event = StatsOperationEvent.builder()
-                .id(collection.getId())
+                .resourceId(collection.getResourceId())
                 .resourceType(collectionDTO.getResourceType())
                 .statsType(StatsType.COLLECTION_COUNT)
                 .operationType(OperationType.COUNT_INCREASE)
                 .build();
-
         eventPublisher.publish(event);
     }
 
@@ -83,6 +84,7 @@ public class CollectionService implements ICollectionService {
             key = "'isCollected::userId=' + #collectionDTO.userId + '&resourceId=' + #collectionDTO.resourceId + '&resourceType=' + #collectionDTO.resourceType"
     )
     public void uncollect(CollectionDTO collectionDTO) {
+        // 构建收藏实体
         Collection collection = Collection.builder()
                 .userId(collectionDTO.getUserId())
                 .resourceId(collectionDTO.getResourceId())
@@ -90,15 +92,16 @@ public class CollectionService implements ICollectionService {
                 .isCollected(false)
                 .build();
 
+        // 插入或更新收藏
         collectionMapper.upsert(collection);
 
+        // 发布事件
         StatsOperationEvent event = StatsOperationEvent.builder()
-                .id(collection.getId())
+                .resourceId(collection.getResourceId())
                 .resourceType(collectionDTO.getResourceType())
                 .statsType(StatsType.COLLECTION_COUNT)
                 .operationType(OperationType.COUNT_DECREASE)
                 .build();
-
         eventPublisher.publish(event);
     }
 

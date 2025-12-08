@@ -17,28 +17,6 @@
             <artifactId>hiphop-ghetto-common-core</artifactId>
             <version>1.0.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.xxxyjade</groupId>
-            <artifactId>hiphop-ghetto-service-album</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.xxxyjade</groupId>
-            <artifactId>hiphop-ghetto-service-song</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.xxxyjade</groupId>
-            <artifactId>hiphop-ghetto-service-comment</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.xxxyjade</groupId>
-            <artifactId>hiphop-ghetto-service-topic</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
 </project>
