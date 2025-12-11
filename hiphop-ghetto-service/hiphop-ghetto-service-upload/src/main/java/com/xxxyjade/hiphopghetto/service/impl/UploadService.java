@@ -2,11 +2,10 @@ package com.xxxyjade.hiphopghetto.service.impl;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.xxxyjade.hiphopghetto.constant.MessageQueueConstant;
-import com.xxxyjade.hiphopghetto.crawl.impl.CloudMusicCrawler;
+import com.xxxyjade.hiphopghetto.constant.RabbitConstant;
 import com.xxxyjade.hiphopghetto.domain.Message;
 import com.xxxyjade.hiphopghetto.enums.MessageType;
-import com.xxxyjade.hiphopghetto.sender.impl.MessageSender;
+import com.xxxyjade.hiphopghetto.sender.MessageSender;
 import com.xxxyjade.hiphopghetto.service.IUploadService;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -64,7 +63,7 @@ public class UploadService implements IUploadService {
         Message<String> message = Message.<String>builder()
                 .body(albumId)
                 .type(MessageType.CRAWL_ALBUM)
-                .queue(MessageQueueConstant.CRAWl_QUEUE)
+                .queue(RabbitConstant.CRAWl_QUEUE)
                 .build();
         messageSender.send(message);
     }

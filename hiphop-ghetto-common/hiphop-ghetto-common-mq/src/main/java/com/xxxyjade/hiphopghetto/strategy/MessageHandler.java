@@ -1,14 +1,14 @@
 package com.xxxyjade.hiphopghetto.strategy;
 
-import com.xxxyjade.hiphopghetto.domain.Message;
-import com.xxxyjade.hiphopghetto.enums.MessageType;
+import com.xxxyjade.hiphopghetto.enums.Strategy;
+import com.xxxyjade.hiphopghetto.message.Message;
 
-public interface MessageHandler<T> {
+public interface MessageHandler<T extends Message> {
 
     // 消息处理方法
-    void handle(Message<T> message);
+     void handle(T message);
 
     // 消息类型标识
-    MessageType support();
+    Strategy support();
 
 }

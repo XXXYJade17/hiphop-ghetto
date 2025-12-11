@@ -40,42 +40,6 @@
 
         <dependency>
             <groupId>com.xxxyjade</groupId>
-            <artifactId>hiphop-ghetto-service-album</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.xxxyjade</groupId>
-            <artifactId>hiphop-ghetto-service-song</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.xxxyjade</groupId>
-            <artifactId>hiphop-ghetto-service-collection</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.xxxyjade</groupId>
-            <artifactId>hiphop-ghetto-service-rating</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.xxxyjade</groupId>
-            <artifactId>hiphop-ghetto-service-comment</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.xxxyjade</groupId>
-            <artifactId>hiphop-ghetto-service-like</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.xxxyjade</groupId>
             <artifactId>hiphop-ghetto-service-topic</artifactId>
             <version>1.0.0</version>
         </dependency>

@@ -6,6 +6,8 @@ import com.xxxyjade.hiphopghetto.cache.annotation.ThreeLevelCacheEvict;
 import com.xxxyjade.hiphopghetto.enums.AccountType;
 import com.xxxyjade.hiphopghetto.enums.BaseCode;
 import com.xxxyjade.hiphopghetto.exception.HipHopGhettoFrameworkException;
+import com.xxxyjade.hiphopghetto.pojo.dto.UserFollowDTO;
+import com.xxxyjade.hiphopghetto.pojo.entity.Follow;
 import com.xxxyjade.hiphopghetto.util.JwtUtil;
 import com.xxxyjade.hiphopghetto.util.PasswordUtil;
 import com.xxxyjade.hiphopghetto.util.UserBloomFilter;
@@ -148,31 +150,51 @@ public class UserService implements IUserService {
         return userVO;
     }
 
-    /**
-     * 更新用户信息
-     * @param userUpdateDTO 用户信息
-     * @return 是否更新成功
-     */
-    @ThreeLevelCacheEvict(
-            key = "user::id=" + "#id",
-            dependOnResult = true
-    )
-    public Boolean update(UserUpdateDTO userUpdateDTO) {
-        User user = User.builder()
-                .id(userUpdateDTO.getId())
-                .username(userUpdateDTO.getUsername())
-                .phone(userUpdateDTO.getPhone())
-                .email(userUpdateDTO.getEmail())
-                .password(PasswordUtil.encrypt(userUpdateDTO.getPassword()))
-                .nickname(userUpdateDTO.getNickname())
-                .sex(userUpdateDTO.getSex())
-                .avatar(userUpdateDTO.getAvatar())
-                .background(userUpdateDTO.getBackground())
-                .description(userUpdateDTO.getDescription())
-                .birthday(userUpdateDTO.getBirthday())
-                .build();
-        int update = userMapper.updateById(user);
-        return update > 0;
+    @ThreeLevelCacheEvict(key = "'user::id=' + #id")
+    public void increaseFollowCount(Long id) {
+        userMapper.increaseFollowCount(id);
     }
+
+    @ThreeLevelCacheEvict(key = "'user::id=' + #id")
+    public void decreaseFollowCount(Long id) {
+        userMapper.decreaseFollowCount(id);
+    }
+
+    @ThreeLevelCacheEvict(key = "'user::id=' + #id")
+    public void increaseFansCount(Long id) {
+        userMapper.increaseFansCount(id);
+    }
+
+    @ThreeLevelCacheEvict(key = "'user::id=' + #id")
+    public void decreaseFansCount(Long id) {
+        userMapper.decreaseFansCount(id);
+    }
+
+//    /**
+//     * 更新用户信息
+//     * @param userUpdateDTO 用户信息
+//     * @return 是否更新成功
+//     */
+//    @ThreeLevelCacheEvict(
+//            key = "user::id=" + "#id",
+//            dependOnResult = true
+//    )
+//    public Boolean update(UserUpdateDTO userUpdateDTO) {
+//        User user = User.builder()
+//                .id(userUpdateDTO.getId())
+//                .username(userUpdateDTO.getUsername())
+//                .phone(userUpdateDTO.getPhone())
+//                .email(userUpdateDTO.getEmail())
+//                .password(PasswordUtil.encrypt(userUpdateDTO.getPassword()))
+//                .nickname(userUpdateDTO.getNickname())
+//                .sex(userUpdateDTO.getSex())
+//                .avatar(userUpdateDTO.getAvatar())
+//                .background(userUpdateDTO.getBackground())
+//                .description(userUpdateDTO.getDescription())
+//                .birthday(userUpdateDTO.getBirthday())
+//                .build();
+//        int update = userMapper.updateById(user);
+//        return update > 0;
+//    }
 
 }

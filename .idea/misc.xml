@@ -9,6 +9,18 @@
         <option value="$PROJECT_DIR$/hiphop-ghetto-web/pom.xml" />
       </list>
     </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/hiphop-ghetto-common/hiphop-ghetto-common-event/pom.xml" />
+        <option value="$PROJECT_DIR$/hiphop-ghetto-common/hiphop-ghetto-common-template/pom.xml" />
+        <option value="$PROJECT_DIR$/hiphop-ghetto-service/hiphop-ghetto-service-album/pom.xml" />
+        <option value="$PROJECT_DIR$/hiphop-ghetto-service/hiphop-ghetto-service-collection/pom.xml" />
+        <option value="$PROJECT_DIR$/hiphop-ghetto-service/hiphop-ghetto-service-comment/pom.xml" />
+        <option value="$PROJECT_DIR$/hiphop-ghetto-service/hiphop-ghetto-service-like/pom.xml" />
+        <option value="$PROJECT_DIR$/hiphop-ghetto-service/hiphop-ghetto-service-rating/pom.xml" />
+        <option value="$PROJECT_DIR$/hiphop-ghetto-service/hiphop-ghetto-service-song/pom.xml" />
+      </set>
+    </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />

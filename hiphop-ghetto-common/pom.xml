@@ -17,8 +17,6 @@
         <module>hiphop-ghetto-common-core</module>
         <module>hiphop-ghetto-common-crawler</module>
         <module>hiphop-ghetto-common-mq</module>
-        <module>hiphop-ghetto-common-event</module>
-        <module>hiphop-ghetto-common-template</module>
     </modules>
 
     <dependencies>

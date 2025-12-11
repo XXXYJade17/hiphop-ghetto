@@ -10,10 +10,10 @@ public enum MusicSortType {
     COMMENT_COUNT("stats.commentCount"), // 最多评论
     RELEASE_TIME("publishTime"); // 最新发行
 
-    private final String type;
+    private final String field;
 
-    MusicSortType(String type) {
-        this.type = type;
+    MusicSortType(String field) {
+        this.field = field;
     }
 
 }

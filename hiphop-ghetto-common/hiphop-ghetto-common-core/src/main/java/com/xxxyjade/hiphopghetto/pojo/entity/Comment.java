@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("user_comment")
+@TableName("comment")
 public class Comment {
 
     /**
@@ -39,6 +39,16 @@ public class Comment {
      * 评论上级类型
      */
     private ResourceType parentType;
+
+    /**
+     * 评论根id
+     */
+    private Long rootId;
+
+    /**
+     * 评论根类型
+     */
+    private ResourceType rootType;
 
     /**
      * 评论内容

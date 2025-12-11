@@ -37,6 +37,4 @@ public class Album implements Serializable {
     @Builder.Default
     private MusicStats stats = new MusicStats();
 
-    private List<Song> songs;
-
 }

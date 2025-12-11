@@ -14,6 +14,8 @@ create table user (
     background varchar(255) default null comment '背景图url',
     description varchar(60) default null comment '简介',
     birthday datetime default null comment '生日',
+    follow_count int default 0 comment '关注数量',
+    fans_count int default 0 comment '粉丝数量',
     create_time datetime not null comment '创建时间',
     update_time datetime not null comment '修改时间',
     status tinyint not null default 1 comment '数据状态(0-禁用,1-正常)',
@@ -22,11 +24,13 @@ create table user (
     unique key uk_email (email)
 ) engine = InnoDB default charset = utf8mb4;
 # 评论区表
-create table user_comment (
+create table comment (
     id bigint comment '评论id(雪花算法生成)',
     user_id bigint not null comment '用户id',
     parent_id bigint not null comment '评论上级id',
-    parent_type tinyint not null comment '评论上级类型 3-评论 4-话题',
+    parent_type varchar(8) not null comment '评论上级类型',
+    root_id bigint default null comment '根评论id',
+    root_type varchar(8) default null comment '根评论类型',
     content text not null comment '评论内容',
     reply_count int default 0 comment '回复数量',
     like_count int default 0 comment '点赞数量',
@@ -36,14 +40,15 @@ create table user_comment (
     unique index uk_user_parent (user_id, parent_id, parent_type),
     index idx_user_id (user_id),
     index idx_parent (parent_id, parent_type),
+    index idx_root (root_id, root_type),
     constraint fk_user_comment foreign key (user_id) references user(id)
 ) engine = InnoDB default charset = utf8mb4;
 # 点赞记录表
-create table user_like (
+create table `like` (
     id bigint comment '点赞id(雪花算法生成)',
     user_id bigint not null comment '用户id',
     resource_id bigint not null comment '点赞对象id',
-    resource_type tinyint not null comment '点赞对象类型',
+    resource_type varchar(8) not null comment '点赞对象类型',
     is_liked bool default true not null comment '是否点赞',
     create_time datetime not null comment '创建时间',
     update_time datetime not null comment '修改时间',
@@ -54,11 +59,11 @@ create table user_like (
     constraint fk_user_like foreign key (user_id) references user(id)
 ) engine = InnoDB default charset = utf8mb4;
 # 收藏记录表
-create table user_collection (
+create table collection (
     id bigint comment '收藏id(雪花算法生成)',
     user_id bigint not null comment '用户id',
     resource_id bigint not null comment '收藏对象id',
-    resource_type tinyint not null comment '收藏对象类型',
+    resource_type varchar(8) not null comment '收藏对象类型',
     is_collected bool default true not null comment '是否收藏',
     create_time datetime not null comment '创建时间',
     update_time datetime not null comment '修改时间',
@@ -69,11 +74,11 @@ create table user_collection (
     constraint fk_user_collection foreign key (user_id) references user(id)
 )engine = InnoDB default charset = utf8mb4;
 # 评分表
-create table user_rating (
+create table rating (
     id bigint comment '评分id',
     user_id bigint not null comment '评分用户id',
     resource_id bigint not null comment '评分对象曲id',
-    resource_type tinyint not null comment '评分对象类型',
+    resource_type varchar(8) not null comment '评分对象类型',
     score tinyint not null comment '评分',
     create_time datetime not null comment '创建时间',
     update_time datetime not null comment '修改时间',
@@ -82,6 +87,19 @@ create table user_rating (
     index idx_user (user_id),
     index idx_resource (resource_id, resource_type),
     constraint fk_user_rating foreign key (user_id) references user(id)
+) engine = InnoDB default charset = utf8mb4;
+create table subscription (
+    id bigint comment '关注id',
+    user_id bigint not null comment '用户id',
+    subscribed_id bigint not null comment '被关注用户id',
+    is_subscribed bool default true not null comment '是否关注',
+    create_time datetime not null comment '创建时间',
+    update_time datetime not null comment '修改时间',
+    primary key (id),
+    unique index uk_user_followed (user_id, subscribed_id),
+    index idx_user (user_id),
+    index idx_followed (subscribed_id),
+    constraint fk_user_follow foreign key (user_id) references user(id)
 ) engine = InnoDB default charset = utf8mb4;
 # 话题表
 create table topic (

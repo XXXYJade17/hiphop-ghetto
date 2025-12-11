@@ -1,6 +1,5 @@
 package com.xxxyjade.hiphopghetto.strategy;
 
-import com.xxxyjade.hiphopghetto.enums.OperationType;
 import com.xxxyjade.hiphopghetto.enums.ResourceType;
 import com.xxxyjade.hiphopghetto.enums.StatsType;
 import com.xxxyjade.hiphopghetto.event.StatsOperationEvent;
@@ -32,8 +31,8 @@ public class TopicViewCountIncreaseHandler implements IStrategy<StatsOperationEv
     }
 
     @Override
-    public OperationType getOperationType() {
-        return OperationType.COUNT_INCREASE;
+    public Operation getOperationType() {
+        return Operation.COUNT_INCREASE;
     }
 
 }

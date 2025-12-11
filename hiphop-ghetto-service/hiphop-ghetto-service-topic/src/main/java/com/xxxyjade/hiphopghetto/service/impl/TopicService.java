@@ -3,8 +3,6 @@ package com.xxxyjade.hiphopghetto.service.impl;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xxxyjade.hiphopghetto.cache.annotation.ThreeLevelCacheEvict;
-import com.xxxyjade.hiphopghetto.enums.MusicSortType;
-import com.xxxyjade.hiphopghetto.enums.OperationType;
 import com.xxxyjade.hiphopghetto.enums.ResourceType;
 import com.xxxyjade.hiphopghetto.enums.StatsType;
 import com.xxxyjade.hiphopghetto.event.StatsOperationEvent;
@@ -77,9 +75,9 @@ public class TopicService implements ITopicService {
 
         StatsOperationEvent event = StatsOperationEvent.builder()
                 .resourceId(topic.getId())
-                .resourceType(ResourceType.TOPIC)
+                .resource(ResourceType.TOPIC)
                 .statsType(StatsType.VIEW_COUNT)
-                .operationType(OperationType.COUNT_INCREASE)
+                .operation(Operation.COUNT_INCREASE)
                 .build();
 
         eventPublisher.publish(event);

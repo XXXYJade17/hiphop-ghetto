@@ -1,9 +1,12 @@
 package com.xxxyjade.hiphopghetto.controller;
 
+import com.xxxyjade.hiphopghetto.pojo.dto.UserFollowDTO;
 import com.xxxyjade.hiphopghetto.result.Result;
 import com.xxxyjade.hiphopghetto.pojo.dto.UserLoginDTO;
 import com.xxxyjade.hiphopghetto.pojo.dto.UserRegisterDTO;
 import com.xxxyjade.hiphopghetto.pojo.dto.UserUpdateDTO;
+import com.xxxyjade.hiphopghetto.service.IUserFollowService;
+import com.xxxyjade.hiphopghetto.util.ThreadUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -22,6 +25,7 @@ import com.xxxyjade.hiphopghetto.pojo.vo.UserVO;
 public class UserController {
 
     private final IUserService userService;
+    private final IUserFollowService userFollowService;
 
     @Operation(summary  = "注册")
     @PostMapping("/register")
@@ -44,9 +48,35 @@ public class UserController {
         return Result.success(userService.info(id));
     }
 
-    public Result<Void> update(@Valid @RequestBody UserUpdateDTO userUpdateDTO) {
-        log.info("用户更新: {}",userUpdateDTO);
-        userService.update(userUpdateDTO);
+//    public Result<Void> update(@Valid @RequestBody UserUpdateDTO userUpdateDTO) {
+//        log.info("用户更新: {}",userUpdateDTO);
+//        userService.update(userUpdateDTO);
+//        return Result.success();
+//    }
+
+    @Operation(summary = "关注")
+    @PostMapping("/{id}/follow")
+    public Result<Void> follow(@PathVariable("id") Long id) {
+        UserFollowDTO userFollowDTO = UserFollowDTO.builder()
+                .userId(ThreadUtil.getUserId())
+                .followId(id)
+                .isFollow(true)
+                .build();
+        log.info("用户关注: {}",userFollowDTO);
+        userFollowService.follow(userFollowDTO);
+        return Result.success();
+    }
+
+    @Operation(summary = "取消关注")
+    @DeleteMapping("/{id}/unfollow")
+    public Result<Void> unfollow(@PathVariable("id") Long id) {
+        UserFollowDTO userFollowDTO = UserFollowDTO.builder()
+                .userId(ThreadUtil.getUserId())
+                .followId(id)
+                .isFollow(false)
+                .build();
+        log.info("用户取消关注: {}",userFollowDTO);
+        userFollowService.unfollow(userFollowDTO);
         return Result.success();
     }
 

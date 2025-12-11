@@ -1,10 +1,8 @@
 package com.xxxyjade.hiphopghetto.consumer.dead;
 
-import com.xxxyjade.hiphopghetto.constant.MessageQueueConstant;
-import com.xxxyjade.hiphopghetto.dispatcher.MessageHandlerDispatcher;
+import com.xxxyjade.hiphopghetto.constant.RabbitConstant;
 import com.xxxyjade.hiphopghetto.domain.Message;
-import com.xxxyjade.hiphopghetto.enums.MessageType;
-import com.xxxyjade.hiphopghetto.sender.impl.MessageSender;
+import com.xxxyjade.hiphopghetto.sender.MessageSender;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -24,7 +22,7 @@ public class CrawlDeadConsumer {
     private final Map<String, AtomicInteger> retryCountMap = new ConcurrentHashMap<>();
 
     // 监听收藏死信队列
-    @RabbitListener(queues = MessageQueueConstant.CRAWl_DEAD_QUEUE)
+    @RabbitListener(queues = RabbitConstant.CRAWl_DEAD_QUEUE)
     public void handleDeadLetterMessage(Message<String> message) {
         String id = message.getId();
         AtomicInteger retryCount = retryCountMap.computeIfAbsent(
@@ -46,7 +44,7 @@ public class CrawlDeadConsumer {
             messageSender.send(message);
         } else {
             log.error("超过重试次数，发送到永久失败队列: {}", message);
-            message.setQueue(MessageQueueConstant.DEAD_LETTER_QUEUE);
+            message.setQueue(RabbitConstant.DEAD_LETTER_QUEUE);
             retryCountMap.remove(id);
         }
     }
