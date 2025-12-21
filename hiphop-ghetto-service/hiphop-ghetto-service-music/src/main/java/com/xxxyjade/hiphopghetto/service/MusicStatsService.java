@@ -15,9 +15,9 @@ public class MusicStatsService {
     private final MusicStatsRepository musicStatsRepository;
 
     /**
-     * 更新专辑统计信息
+     * 更新音乐统计信息
      */
-    @ThreeLevelCacheEvict(key = "#statsUpdateDTO.type + 'Detail::id=' + #id")
+    @ThreeLevelCacheEvict(key = "#statsUpdateDTO.resourceType + 'Detail::id=' + #id")
     public int updateStats(StatsUpdateDTO statsUpdateDTO) {
         return musicStatsRepository.updateStats(statsUpdateDTO);
     }

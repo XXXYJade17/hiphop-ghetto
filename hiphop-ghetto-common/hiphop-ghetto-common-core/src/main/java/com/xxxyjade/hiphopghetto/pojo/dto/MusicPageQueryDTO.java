@@ -14,6 +14,6 @@ public class MusicPageQueryDTO {
 
     private Integer offset;
     private Integer limit;
-    private MusicSortType sort = null;
+    private MusicSortType sort;
 
 }

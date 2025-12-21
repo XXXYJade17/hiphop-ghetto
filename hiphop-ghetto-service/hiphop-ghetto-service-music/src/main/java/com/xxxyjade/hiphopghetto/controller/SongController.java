@@ -21,9 +21,10 @@ public class SongController {
     private final SongService songService;
 
     @GetMapping("/page")
-    public Result<PageVO<Song>> page(@RequestParam(value = "limit", defaultValue = "20") Integer limit,
-                                      @RequestParam(value = "offset", defaultValue = "1") Integer offset,
-                                      @RequestParam(value = "sort", required = false) MusicSortType sort) {
+    public Result<PageVO<Song>> page(
+            @RequestParam(value = "limit", defaultValue = "20") Integer limit,
+            @RequestParam(value = "offset", defaultValue = "1") Integer offset,
+            @RequestParam(value = "sort", required = false) MusicSortType sort) {
         MusicPageQueryDTO pageQueryDTO = MusicPageQueryDTO.builder()
                 .limit(limit)
                 .offset(offset)

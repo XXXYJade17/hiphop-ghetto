@@ -118,15 +118,10 @@ public class LikeService {
     }
 
     private StatsUpdateMessage buildMessage(Like like) {
-        StatsUpdateDTO statsUpdateDTO = StatsUpdateDTO.builder()
-                .id(like.getResourceId())
-                .resourceType(like.getResourceType())
+        return StatsUpdateMessage.builder()
+                .data(like)
                 .statsType(StatsType.LIKE_COUNT)
                 .value(like.getIsLiked() ? 1 : -1)
-                .build();
-        return StatsUpdateMessage.builder()
-                .support(Strategy.LIKE_STATS)
-                .statsUpdateDTO(statsUpdateDTO)
                 .build();
     }
 

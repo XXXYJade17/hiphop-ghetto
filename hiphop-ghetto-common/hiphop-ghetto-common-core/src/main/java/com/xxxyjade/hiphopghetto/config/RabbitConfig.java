@@ -11,38 +11,14 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfig {
 
     /**
-     * 创建Topic交换机
+     * 创建统计队列
      */
-    @Bean
-    public TopicExchange topicExchange() {
-        return new TopicExchange(RabbitConstant.TOPIC_EXCHANGE);
-    }
-
     @Bean
     public Queue statsQueue() {
         return QueueBuilder.durable(RabbitConstant.STATS_QUEUE)
                 .withArgument("x-dead-letter-exchange", "")
                 .withArgument("x-dead-letter-routing-key", RabbitConstant.STATS_DEAD_QUEUE)
                 .build();
-    }
-
-    @Bean
-    public Queue statsDeadQueue() {
-        return new Queue(RabbitConstant.STATS_DEAD_QUEUE);
-    }
-
-    @Bean
-    public Binding bindingStatsQueue(Queue statsQueue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(statsQueue)
-                .to(topicExchange)
-                .with(RabbitConstant.STATS_ROUTING_PATTERN);
-    }
-
-    @Bean
-    public Binding bindingStatsDeadQueue(Queue statsDeadQueue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(statsDeadQueue)
-                .to(topicExchange)
-                .with(RabbitConstant.STATS_DEAD_ROUTING_KEY);
     }
 
     /**
@@ -70,6 +46,14 @@ public class RabbitConfig {
     @Bean
     public Queue crawlDeadQueue() {
         return new Queue(RabbitConstant.CRAWl_DEAD_QUEUE);
+    }
+
+    /**
+     * 创建统计死信队列
+     */
+    @Bean
+    public Queue statsDeadQueue() {
+        return new Queue(RabbitConstant.STATS_DEAD_QUEUE);
     }
 
     /**

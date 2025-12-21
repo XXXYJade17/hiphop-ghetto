@@ -1,7 +1,7 @@
 package com.xxxyjade.hiphopghetto.consumer.dead;
 
 import com.xxxyjade.hiphopghetto.constant.RabbitConstant;
-import com.xxxyjade.hiphopghetto.domain.Message;
+import com.xxxyjade.hiphopghetto.message.Message;
 import com.xxxyjade.hiphopghetto.sender.MessageSender;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class CrawlDeadConsumer {
 
     // 监听收藏死信队列
     @RabbitListener(queues = RabbitConstant.CRAWl_DEAD_QUEUE)
-    public void handleDeadLetterMessage(Message<String> message) {
+    public void handleDeadLetterMessage(Message message) {
         String id = message.getId();
         AtomicInteger retryCount = retryCountMap.computeIfAbsent(
                 id,
@@ -41,10 +41,9 @@ public class CrawlDeadConsumer {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-            messageSender.send(message);
+            messageSender.send(RabbitConstant.CRAWl_QUEUE, message);
         } else {
             log.error("超过重试次数，发送到永久失败队列: {}", message);
-            message.setQueue(RabbitConstant.DEAD_LETTER_QUEUE);
             retryCountMap.remove(id);
         }
     }

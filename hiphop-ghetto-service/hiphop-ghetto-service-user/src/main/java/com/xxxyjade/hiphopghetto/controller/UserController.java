@@ -1,11 +1,11 @@
 package com.xxxyjade.hiphopghetto.controller;
 
-import com.xxxyjade.hiphopghetto.pojo.dto.UserFollowDTO;
+import com.xxxyjade.hiphopghetto.pojo.entity.Subscription;
 import com.xxxyjade.hiphopghetto.result.Result;
 import com.xxxyjade.hiphopghetto.pojo.dto.UserLoginDTO;
 import com.xxxyjade.hiphopghetto.pojo.dto.UserRegisterDTO;
-import com.xxxyjade.hiphopghetto.pojo.dto.UserUpdateDTO;
-import com.xxxyjade.hiphopghetto.service.IUserFollowService;
+import com.xxxyjade.hiphopghetto.service.UserService;
+import com.xxxyjade.hiphopghetto.service.UserSubscriptionService;
 import com.xxxyjade.hiphopghetto.util.ThreadUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,7 +13,6 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import com.xxxyjade.hiphopghetto.service.IUserService;
 import com.xxxyjade.hiphopghetto.pojo.vo.UserAuthVO;
 import com.xxxyjade.hiphopghetto.pojo.vo.UserVO;
 
@@ -24,8 +23,8 @@ import com.xxxyjade.hiphopghetto.pojo.vo.UserVO;
 @Slf4j
 public class UserController {
 
-    private final IUserService userService;
-    private final IUserFollowService userFollowService;
+    private final UserService userService;
+    private final UserSubscriptionService userSubscriptionService;
 
     @Operation(summary  = "注册")
     @PostMapping("/register")
@@ -55,28 +54,28 @@ public class UserController {
 //    }
 
     @Operation(summary = "关注")
-    @PostMapping("/{id}/follow")
-    public Result<Void> follow(@PathVariable("id") Long id) {
-        UserFollowDTO userFollowDTO = UserFollowDTO.builder()
+    @PostMapping("/{id}/subscribe")
+    public Result<Void> subscribe(@PathVariable("id") Long id) {
+        Subscription subscription = Subscription.builder()
                 .userId(ThreadUtil.getUserId())
-                .followId(id)
-                .isFollow(true)
+                .subscribedId(id)
+                .isSubscribed(true)
                 .build();
-        log.info("用户关注: {}",userFollowDTO);
-        userFollowService.follow(userFollowDTO);
+        log.info("用户关注: {}", subscription);
+        userSubscriptionService.subscribe(subscription);
         return Result.success();
     }
 
     @Operation(summary = "取消关注")
     @DeleteMapping("/{id}/unfollow")
-    public Result<Void> unfollow(@PathVariable("id") Long id) {
-        UserFollowDTO userFollowDTO = UserFollowDTO.builder()
+    public Result<Void> unsubscribe(@PathVariable("id") Long id) {
+        Subscription subscription = Subscription.builder()
                 .userId(ThreadUtil.getUserId())
-                .followId(id)
-                .isFollow(false)
+                .subscribedId(id)
+                .isSubscribed(false)
                 .build();
-        log.info("用户取消关注: {}",userFollowDTO);
-        userFollowService.unfollow(userFollowDTO);
+        log.info("用户取消关注: {}", subscription);
+        userSubscriptionService.unsubscribe(subscription);
         return Result.success();
     }
 

@@ -30,6 +30,11 @@ public class Topic {
     private Long userId;
 
     /**
+     * 用户昵称
+     */
+    private String nickname;
+
+    /**
      * 标题
      */
     private String title;

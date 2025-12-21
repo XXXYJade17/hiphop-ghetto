@@ -3,10 +3,8 @@ package com.xxxyjade.hiphopghetto.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xxxyjade.hiphopghetto.constant.RabbitConstant;
 import com.xxxyjade.hiphopghetto.enums.StatsType;
-import com.xxxyjade.hiphopghetto.enums.Strategy;
 import com.xxxyjade.hiphopghetto.mapper.CollectionMapper;
 import com.xxxyjade.hiphopghetto.message.StatsUpdateMessage;
-import com.xxxyjade.hiphopghetto.pojo.dto.StatsUpdateDTO;
 import com.xxxyjade.hiphopghetto.pojo.entity.Collection;
 import com.xxxyjade.hiphopghetto.sender.MessageSender;
 import lombok.AllArgsConstructor;
@@ -71,15 +69,10 @@ public class CollectionService {
     }
 
     private StatsUpdateMessage buildMessage(Collection collection) {
-        StatsUpdateDTO statsUpdateDTO = StatsUpdateDTO.builder()
-                .id(collection.getResourceId())
-                .resourceType(collection.getResourceType())
+        return StatsUpdateMessage.builder()
+                .data(collection)
                 .statsType(StatsType.COLLECTION_COUNT)
                 .value(collection.getIsCollected() ? 1 : -1)
-                .build();
-        return StatsUpdateMessage.builder()
-                .support(Strategy.MUSIC_STATS)
-                .statsUpdateDTO(statsUpdateDTO)
                 .build();
     }
 

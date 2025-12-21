@@ -49,4 +49,4 @@ springdoc:
 logging:
   level:
     org.springframework.data.mongodb: DEBUG
-    org.mongodb.driver: DEBUG
+    org.mongodb.driver: WARN

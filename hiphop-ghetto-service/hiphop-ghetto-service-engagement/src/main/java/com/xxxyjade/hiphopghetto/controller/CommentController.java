@@ -33,13 +33,13 @@ public class CommentController {
             @PathVariable("id") Long parentId,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "size", defaultValue = "20") Integer size,
-            @RequestParam(value = "sort", defaultValue = "DEFAULT") CommentSortType sortType) {
+            @RequestParam(value = "sort", required = false) CommentSortType sortType) {
         CommentPageQueryDTO pageQueryDTO = CommentPageQueryDTO.builder()
                 .userId(ThreadUtil.getUserId())
                 .parentId(parentId)
-                .page(page)
-                .size(size)
-                .sortType(sortType)
+                .offset(page)
+                .limit(size)
+                .sort(sortType)
                 .build();
         return Result.success(commentService.page(pageQueryDTO));
     }
@@ -75,6 +75,7 @@ public class CommentController {
                 .rootId(commentDeleteDTO.getRootId())
                 .rootType(commentDeleteDTO.getRootType())
                 .build();
+        commentService.delete(comment);
         return Result.success();
     }
 

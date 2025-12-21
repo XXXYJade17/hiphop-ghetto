@@ -4,12 +4,16 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xxxyjade.hiphopghetto.cache.annotation.ThreeLevelCacheEvict;
+import com.xxxyjade.hiphopghetto.constant.RabbitConstant;
+import com.xxxyjade.hiphopghetto.enums.StatsType;
 import com.xxxyjade.hiphopghetto.mapper.CommentMapper;
 import com.xxxyjade.hiphopghetto.message.StatsUpdateMessage;
 import com.xxxyjade.hiphopghetto.pojo.dto.CommentPageQueryDTO;
+import com.xxxyjade.hiphopghetto.pojo.dto.StatsUpdateDTO;
 import com.xxxyjade.hiphopghetto.pojo.entity.Comment;
 import com.xxxyjade.hiphopghetto.pojo.vo.CommentVO;
 import com.xxxyjade.hiphopghetto.pojo.vo.PageVO;
+import com.xxxyjade.hiphopghetto.sender.MessageSender;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -27,6 +31,7 @@ public class CommentService {
 
     private final CommentMapper commentMapper;
     private final LikeService likeService;
+    private final MessageSender messageSender;
 
     /**
      * 分页查询评论
@@ -34,16 +39,18 @@ public class CommentService {
     @Cacheable(
             value = "commentPage::",
             key = "'parentId='+ #pageQueryDTO.parentId +" +
-                  "'&page=' + #pageQueryDTO.page + " +
-                  "'&size=' + #pageQueryDTO.size + " +
-                  "'&sortType=' + #pageQueryDTO.sortType"
+                  "'&offset=' + #pageQueryDTO.offset + " +
+                  "'&limit=' + #pageQueryDTO.limit + " +
+                  "'&sort=' + #pageQueryDTO.sort"
     )
     public PageVO<CommentVO> page(CommentPageQueryDTO pageQueryDTO) {
         Page<Comment> page = new Page<>(
-                pageQueryDTO.getPage() - 1,
-                pageQueryDTO.getSize()
+                pageQueryDTO.getOffset() - 1,
+                pageQueryDTO.getLimit()
         );
-        page.setOrders(Collections.singletonList(OrderItem.desc(pageQueryDTO.getSortType().toString())));
+        if (pageQueryDTO.getSort() != null) {
+            page.setOrders(Collections.singletonList(OrderItem.desc(pageQueryDTO.getSort().toString())));
+        }
         LambdaQueryWrapper<Comment> wrapper = new LambdaQueryWrapper<Comment>()
                 .eq(Comment::getParentId, pageQueryDTO.getParentId());
         commentMapper.selectPage(page, wrapper);
@@ -60,7 +67,7 @@ public class CommentService {
                     .parentId(comment.getParentId())
                     .parentType(comment.getParentType())
                     .content(comment.getContent())
-                    .replyCount(comment.getReplyCount())
+                    .replyCount(comment.getCommentCount())
                     .likeCount(comment.getLikeCount())
                     .createTime(comment.getCreateTime())
                     .isLiked(userLikes.get(comment.getId()))
@@ -78,7 +85,7 @@ public class CommentService {
     public void create(Comment comment) {
         int insert = commentMapper.insert(comment);
         if (insert > 0) {
-            // TODO 发送消息
+            messageSender.send(RabbitConstant.STATS_QUEUE, buildMessage(comment, 1));
         }
     }
 
@@ -87,16 +94,23 @@ public class CommentService {
      */
     @ThreeLevelCacheEvict(keyPrefix = "'commentPage::parentId=' + #commentDTO.parentId")
     public void delete(Comment comment) {
-        // 构造实体，并删除
         int delete = commentMapper.deleteById(comment);
         if (delete > 0) {
-            // TODO 发送消息
+            messageSender.send(RabbitConstant.STATS_QUEUE, buildMessage(comment, -1));
         }
     }
 
-    private StatsUpdateMessage buildMessage(Comment comment) {
-        // TODO 构造消息
-        return null;
+    @ThreeLevelCacheEvict(keyPrefix = "'commentPage::parentId=' + #statsUpdateDTO.id")
+    public void updateStats(StatsUpdateDTO statsUpdateDTO) {
+        commentMapper.updateStats(statsUpdateDTO.getId(), statsUpdateDTO.getStatsType(), statsUpdateDTO.getValue());
+    }
+
+    private StatsUpdateMessage buildMessage(Comment comment, int value) {
+        return StatsUpdateMessage.builder()
+                .data(comment)
+                .statsType(StatsType.COMMENT_COUNT)
+                .value(value)
+                .build();
     }
 
 }

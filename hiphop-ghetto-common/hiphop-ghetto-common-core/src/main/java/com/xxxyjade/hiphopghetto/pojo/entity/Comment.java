@@ -58,7 +58,7 @@ public class Comment {
     /**
      * 回复数量
      */
-    private Integer replyCount;
+    private Integer commentCount;
 
     /**
      * 点赞数量

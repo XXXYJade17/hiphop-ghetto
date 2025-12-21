@@ -5,8 +5,8 @@ public enum StatsType {
     RATING_COUNT,
     COMMENT_COUNT,
     LIKE_COUNT,
-    SUBSCRIBE_COUNT,
-    FANS_COUNT;
+    SUBSCRIPTION_COUNT,
+    FAN_COUNT;
 
     @Override
     public String toString() {

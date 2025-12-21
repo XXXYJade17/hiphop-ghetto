@@ -20,7 +20,7 @@ public class Subscription {
 
     private Long userId;
 
-    private Long followId;
+    private Long subscribedId;
 
     private Boolean isSubscribed;
 

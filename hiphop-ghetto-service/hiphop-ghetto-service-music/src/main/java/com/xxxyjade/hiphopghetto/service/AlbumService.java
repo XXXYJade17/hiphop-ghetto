@@ -29,8 +29,8 @@ public class AlbumService{
      */
     @ThreeLevelCache(
             key = "'albumPage::offset=' + #pageQueryDTO.offset + " +
-                    "'&limit=' + #pageQueryDTO.limit + " +
-                    "'&sort=' + #pageQueryDTO.sort"
+                  "'&limit=' + #pageQueryDTO.limit + " +
+                  "'&sort=' + #pageQueryDTO.sort"
     )
     public PageVO<Album> page(MusicPageQueryDTO pageQueryDTO) {
         PageRequest pageRequest = PageRequest.of(
@@ -55,7 +55,7 @@ public class AlbumService{
     /**
      * 插入专辑，若存在则忽略
      */
-    @ThreeLevelCacheEvict(keyPrefix = "albumPage::")
+    @ThreeLevelCacheEvict(keyPrefix = "'albumPage::'")
     public void saveAll(List<Album> albums) {
         albumRepository.saveAll(albums);
     }

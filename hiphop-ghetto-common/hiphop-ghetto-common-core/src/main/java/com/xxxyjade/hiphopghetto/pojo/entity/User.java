@@ -78,6 +78,16 @@ public class User implements Serializable {
     private LocalDate birthday;
 
     /**
+     * 关注数
+     */
+    private Integer subscriptionCount;
+
+    /**
+     * 粉丝数
+     */
+    private Integer fanCount;
+
+    /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)

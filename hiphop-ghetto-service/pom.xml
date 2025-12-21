@@ -16,7 +16,6 @@
     <modules>
         <module>hiphop-ghetto-service-user</module>
         <module>hiphop-ghetto-service-upload</module>
-        <module>hiphop-ghetto-service-topic</module>
         <module>hiphop-ghetto-service-music</module>
         <module>hiphop-ghetto-service-engagement</module>
     </modules>

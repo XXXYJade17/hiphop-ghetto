@@ -1,5 +1,6 @@
 package com.xxxyjade.hiphopghetto.util;
 
+import com.xxxyjade.hiphopghetto.pojo.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
@@ -30,14 +31,16 @@ public class JwtUtil {
 
     /**
      * 生成 JWT令牌
-     * @param userId 用户Id
+     * @param user 用户
      * @return 令牌
      */
-    public static String createAuthJwt(Long userId) {
+    public static String createAuthJwt(User user) {
         // 设置jwt的body
         JwtBuilder builder = Jwts.builder()
                 // 设置jwt的body
-                .setClaims(Map.of("userId", userId))
+                .setClaims(Map.of("userId", user.getId(),
+                        "username", user.getUsername(),
+                        "nickname", user.getNickname()))
                 // 设置签名使用的签名算法和签名使用的秘钥
                 .signWith(Keys.hmacShaKeyFor(
                         secretKey.getBytes(StandardCharsets.UTF_8)),
@@ -51,11 +54,11 @@ public class JwtUtil {
      * JWT令牌解密
      * @return 声明
      */
-    public static Claims parseAuthJwt() {
+    public static Claims parseAuthJwt(String token) {
         JwtParser parser = Jwts.parserBuilder()
                 .setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))
                 .build();
-        return parser.parseClaimsJws(tokenName).getBody();
+        return parser.parseClaimsJws(token).getBody();
     }
 
 }

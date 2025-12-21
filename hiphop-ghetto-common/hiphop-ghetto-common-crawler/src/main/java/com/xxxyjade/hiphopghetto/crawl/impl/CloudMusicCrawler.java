@@ -2,6 +2,7 @@ package com.xxxyjade.hiphopghetto.crawl.impl;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.xxxyjade.hiphopghetto.crawl.ICloudMusicCrawler;
+import com.xxxyjade.hiphopghetto.pojo.dto.CrawAlbumDTO;
 import com.xxxyjade.hiphopghetto.pojo.entity.Album;
 import com.xxxyjade.hiphopghetto.pojo.entity.Artist;
 import com.xxxyjade.hiphopghetto.pojo.entity.Song;
@@ -29,7 +30,7 @@ public class CloudMusicCrawler implements ICloudMusicCrawler {
     private static final int RETRY_DELAY = 10000;
 
     @Override
-    public List<Album> crawlByArtistId(String artistId) {
+    public List<CrawAlbumDTO> crawlByArtistId(String artistId) {
         String url = "https://music.163.com/artist/album?id=" + artistId + "&limit=100";
         Document document = requestHtmlWithRetry(url);
         List<String> albumIds = parseAlbumIds(document);
@@ -41,7 +42,7 @@ public class CloudMusicCrawler implements ICloudMusicCrawler {
     }
 
     @Override
-    public Album crawlByAlbumId(String albumId) {
+    public CrawAlbumDTO crawlByAlbumId(String albumId) {
         String url = "https://music.163.com/api/album/" + albumId + "?ext=true&id=" + albumId + "&offset=0&total=true";
         JSONObject response = requestJsonWithRetry(url);
         JSONObject albumObject = response.getJSONObject("album");
@@ -49,7 +50,7 @@ public class CloudMusicCrawler implements ICloudMusicCrawler {
     }
 
     // ---------------- 辅助方法 ----------------
-    private Album parseAlbum(JSONObject albumObject) {
+    private CrawAlbumDTO parseAlbum(JSONObject albumObject) {
         // 构造专辑实体
         Album album = Album.builder()
                 // 专辑ID
@@ -65,14 +66,19 @@ public class CloudMusicCrawler implements ICloudMusicCrawler {
                 // 专辑简介
                 .description(albumObject.get("description").toString())
                 .build();
+
         // 提取专辑歌曲
         List<Song> songs = albumObject.getJSONArray("songs")
                 .stream()
                 .map(o -> parseSong((JSONObject) o, album))
                 .toList();
-        album.setSongs(songs);
 
-        return album;
+        System.out.println(songs);
+
+        return CrawAlbumDTO.builder()
+                .album(album)
+                .songs(songs)
+                .build();
     }
 
     private Song parseSong(JSONObject songObject, Album parentAlbum) {

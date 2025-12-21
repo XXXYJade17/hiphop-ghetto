@@ -19,4 +19,5 @@ public class MusicStatsRepository {
         Update update = new Update().inc("stats." + statsUpdateDTO.getStatsType(), statsUpdateDTO.getValue());
         return (int) mongoTemplate.updateFirst(query, update, statsUpdateDTO.getResourceType().toString()).getModifiedCount();
     }
+
 }

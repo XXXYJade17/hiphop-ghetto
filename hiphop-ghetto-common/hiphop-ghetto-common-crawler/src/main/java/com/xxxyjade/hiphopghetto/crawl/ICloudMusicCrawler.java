@@ -1,6 +1,6 @@
 package com.xxxyjade.hiphopghetto.crawl;
 
-import com.xxxyjade.hiphopghetto.pojo.entity.Album;
+import com.xxxyjade.hiphopghetto.pojo.dto.CrawAlbumDTO;
 
 import java.util.List;
 
@@ -11,12 +11,12 @@ public interface ICloudMusicCrawler {
      * @param artistId 歌手ID
      * @return 专辑列表
      */
-    List<Album> crawlByArtistId(String artistId);
+    List<CrawAlbumDTO> crawlByArtistId(String artistId);
 
     /**
      * 根据专辑爬取专辑详情
      * @param albumId 专辑ID
      * @return 专辑详情
      */
-    Album crawlByAlbumId(String albumId);
+    CrawAlbumDTO crawlByAlbumId(String albumId);
 }

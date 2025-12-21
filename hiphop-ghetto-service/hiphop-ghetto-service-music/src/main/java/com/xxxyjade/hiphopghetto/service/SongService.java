@@ -28,8 +28,8 @@ public class SongService {
      */
     @ThreeLevelCache(
             key = "'songPage::offset=' + #pageQueryDTO.offset + " +
-                    "'&limit=' + #pageQueryDTO.limit + " +
-                    "'&sort=' + #pageQueryDTO.sort"
+                  "'&limit=' + #pageQueryDTO.limit + " +
+                  "'&sort=' + #pageQueryDTO.sort"
     )
     public PageVO<Song> page(MusicPageQueryDTO pageQueryDTO) {
         PageRequest pageRequest = PageRequest.of(
@@ -57,7 +57,7 @@ public class SongService {
     /**
      * 插入歌曲，若存在则忽略
      */
-    @ThreeLevelCacheEvict(keyPrefix = "songPage::")
+    @ThreeLevelCacheEvict(keyPrefix = "'songPage::'")
     public void saveAll(List<Song> songs) {
         songRepository.saveAll(songs);
     }

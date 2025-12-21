@@ -1,7 +1,7 @@
 package com.xxxyjade.hiphopghetto.controller;
 
 import com.xxxyjade.hiphopghetto.result.Result;
-import com.xxxyjade.hiphopghetto.service.impl.UploadService;
+import com.xxxyjade.hiphopghetto.service.UploadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;

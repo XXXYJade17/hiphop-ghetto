@@ -68,15 +68,10 @@ public class RatingService {
     }
 
     private StatsUpdateMessage buildMessage(Rating rating) {
-        StatsUpdateDTO statsUpdateDTO = StatsUpdateDTO.builder()
-                .id(rating.getResourceId())
-                .resourceType(rating.getResourceType())
+        return StatsUpdateMessage.builder()
+                .data(rating)
                 .statsType(StatsType.RATING_COUNT)
                 .value(1)
-                .build();
-        return StatsUpdateMessage.builder()
-                .support(Strategy.MUSIC_STATS)
-                .statsUpdateDTO(statsUpdateDTO)
                 .build();
     }
 

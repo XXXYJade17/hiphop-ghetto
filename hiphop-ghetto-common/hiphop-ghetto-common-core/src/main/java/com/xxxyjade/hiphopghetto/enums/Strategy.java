@@ -2,12 +2,14 @@ package com.xxxyjade.hiphopghetto.enums;
 
 public enum Strategy {
 //==================== Stats ====================
-    MUSIC_STATS,
-    COMMENT_STATS,
-    LIKE_STATS,
+    COLLECTION_COUNT,
+    RATING_COUNT,
+    COMMENT_COUNT,
+    LIKE_COUNT,
+    SUBSCRIPTION_COUNT,
 
 //==================== Message ====================
-    STATS_UPDATE;
+    CRAWL_ALBUM;
 
     @Override
     public String toString() {

@@ -40,16 +40,15 @@
 
         <dependency>
             <groupId>com.xxxyjade</groupId>
-            <artifactId>hiphop-ghetto-service-topic</artifactId>
+            <artifactId>hiphop-ghetto-service-upload</artifactId>
             <version>1.0.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.xxxyjade</groupId>
-            <artifactId>hiphop-ghetto-service-upload</artifactId>
+            <artifactId>hiphop-ghetto-service-engagement</artifactId>
             <version>1.0.0</version>
         </dependency>
-
     </dependencies>
 
     <build>

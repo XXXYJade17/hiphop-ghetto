@@ -17,8 +17,10 @@
         <option value="$PROJECT_DIR$/hiphop-ghetto-service/hiphop-ghetto-service-collection/pom.xml" />
         <option value="$PROJECT_DIR$/hiphop-ghetto-service/hiphop-ghetto-service-comment/pom.xml" />
         <option value="$PROJECT_DIR$/hiphop-ghetto-service/hiphop-ghetto-service-like/pom.xml" />
+        <option value="$PROJECT_DIR$/hiphop-ghetto-service/hiphop-ghetto-service-message/pom.xml" />
         <option value="$PROJECT_DIR$/hiphop-ghetto-service/hiphop-ghetto-service-rating/pom.xml" />
         <option value="$PROJECT_DIR$/hiphop-ghetto-service/hiphop-ghetto-service-song/pom.xml" />
+        <option value="$PROJECT_DIR$/hiphop-ghetto-service/hiphop-ghetto-service-topic/pom.xml" />
       </set>
     </option>
   </component>
